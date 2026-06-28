@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-inter: "Inter", sans-serif;
+  --color-primary: #6366f1;
+  --color-surface: #faf8ff;
+  --color-surface-dark: #0f172a;
+  
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+}
+
+@layer base {
+  body {
+    @apply font-inter bg-surface dark:bg-surface-dark text-slate-900 dark:text-slate-100 antialiased;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-800/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)];
+  }
+  
+  .glass-card {
+    @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-slate-800/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] rounded-lg sm:rounded-[16px];
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent;
+  }
+  
+  .gradient-ring {
+    @apply p-[2px] bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-full;
+  }
+}
