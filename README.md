@@ -40,4 +40,4 @@ npm run dev
 ```
 
 ## 📸 Screenshots
-*(Coming Soon - Add some screenshots of your app here!)*
+*(Coming Soon )*
