@@ -5,7 +5,7 @@ Connectify is a modern, fully-functional social media platform built using the M
 **Live Demo:** [https://connectify-social-media-webapp.vercel.app/](https://connectify-social-media-webapp.vercel.app/)
 
 ## ✨ Key Features
-- **Real-Time Chat:** Instant messaging using WebSockets (Socket.io) with features like "Clear Chat" and typing indicators.
+- **Real-Time Chat:** Instant messaging using WebSockets (Socket.io) with features like "Clear Chat",Video Calling,Voice Calling and typing indicators.
 - **Photo Stories:** Upload and view 15-second ephemeral photo stories with mobile-friendly touch cropping.
 - **Dynamic Post Feed:** Create posts, upload images, like, comment, and engage with other users' content seamlessly.
 - **Activity Notifications:** Organized tabs for All, Likes, Comments, and Mentions to keep track of engagement.
