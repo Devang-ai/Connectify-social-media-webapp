@@ -81,10 +81,12 @@ io.on('connection', (socket) => {
   });
 
   socket.on('answer_call', (data) => {
+    console.log(`Emitting call_accepted to room: ${data.to}`);
     socket.in(data.to).emit('call_accepted', data.signal);
   });
 
   socket.on('ice_candidate', (data) => {
+    console.log(`Emitting ice_candidate to room: ${data.to}`);
     socket.in(data.to).emit('ice_candidate', data.candidate);
   });
 

@@ -41,6 +41,7 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd, currentUser }) =>
 
       peer.onicecandidate = (event) => {
         if (event.candidate && socket) {
+          console.log("SENDING ICE CANDIDATE", event.candidate);
           socket.emit('ice_candidate', {
             to: incomingCall ? incomingCall.from : (callTarget?._id || callTarget?.id),
             candidate: event.candidate
@@ -49,6 +50,7 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd, currentUser }) =>
       };
 
       peer.ontrack = (event) => {
+        console.log("RECEIVED REMOTE TRACK", event.streams[0]);
         if (event.streams && event.streams[0]) {
           setRemoteStream(event.streams[0]);
         }
@@ -89,12 +91,15 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd, currentUser }) =>
     if (!socket) return;
 
     const handleCallAccepted = async (signal) => {
+      console.log("CALL ACCEPTED RECEIVED", signal);
       try {
         setCallAccepted(true);
         if (peerConnectionRef.current) {
           await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(signal));
+          console.log("SET REMOTE DESCRIPTION (Caller) SUCCESS");
           
           const storeState = useMessageStore.getState();
+          console.log("PROCESSING PENDING ICE CANDIDATES (Caller):", storeState.pendingIceCandidates.length);
           if (storeState.pendingIceCandidates.length > 0) {
             storeState.pendingIceCandidates.forEach(c => {
               peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(c)).catch(e => console.error(e));
@@ -102,7 +107,7 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd, currentUser }) =>
             storeState.clearPendingIceCandidates();
           }
         }
-      } catch (e) { console.error(e); }
+      } catch (e) { console.error("Error in handleCallAccepted:", e); }
     };
 
     const handleCallEnded = () => {
@@ -150,6 +155,7 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd, currentUser }) =>
          await peerConnectionRef.current.setLocalDescription(offer);
 
          if (socket && currentUser) {
+           console.log("EMITTING call_user to:", callTarget._id || callTarget.id, "from:", currentUser._id || currentUser.id);
            socket.emit('call_user', {
              userToCall: callTarget._id || callTarget.id,
              signalData: offer,
@@ -179,8 +185,10 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd, currentUser }) =>
       if (peerConnectionRef.current && incomingCall) {
          stream.getTracks().forEach(track => peerConnectionRef.current.addTrack(track, stream));
          await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(incomingCall.signal));
+         console.log("SET REMOTE DESCRIPTION (Callee) SUCCESS");
          
          const storeState = useMessageStore.getState();
+         console.log("PROCESSING PENDING ICE CANDIDATES (Callee):", storeState.pendingIceCandidates.length);
          if (storeState.pendingIceCandidates.length > 0) {
            storeState.pendingIceCandidates.forEach(c => {
              peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(c)).catch(e => console.error(e));
@@ -190,8 +198,10 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd, currentUser }) =>
 
          const answer = await peerConnectionRef.current.createAnswer();
          await peerConnectionRef.current.setLocalDescription(answer);
+         console.log("CREATED AND SET LOCAL DESCRIPTION (Callee)");
 
          if (socket) {
+           console.log("EMITTING answer_call to:", incomingCall.from);
            socket.emit('answer_call', {
              to: incomingCall.from,
              signal: answer
