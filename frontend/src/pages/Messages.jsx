@@ -143,7 +143,7 @@ const Messages = () => {
                     </div>
                     {chat?.lastMessage ? (
                       <p className={`text-xs truncate ${isActive ? 'text-slate-700 dark:text-slate-300 font-medium' : 'text-slate-500'}`}>
-                        {chat.lastMessage.text}
+                        {chat.lastMessage.sharedPost ? 'Shared a post.' : (chat.lastMessage.text || 'Sent an attachment')}
                       </p>
                     ) : (
                       <p className="text-xs text-slate-500">{friend.handle}</p>
@@ -210,7 +210,19 @@ const Messages = () => {
                   <div className={`flex flex-col gap-1 ${isMe ? 'items-end' : ''}`}>
                     <div className={`p-3 md:p-4 shadow-sm ${isMe ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl rounded-br-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-2xl rounded-bl-sm'}`}>
                       {msg.mediaUrl && <img src={msg.mediaUrl} alt="Attachment" className="w-full max-w-xs rounded-xl object-cover mb-2" />}
-                      <p className="text-sm">{msg.text}</p>
+                      {msg.sharedPost && typeof msg.sharedPost === 'object' && (
+                        <div className={`mb-2 rounded-xl p-3 border w-64 ${isMe ? 'bg-white/10 border-white/20' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-sm'}`}>
+                          <div className="flex items-center gap-2 mb-2">
+                            <img src={msg.sharedPost.author?.profileImage || `https://ui-avatars.com/api/?name=${msg.sharedPost.author?.name}`} className="w-6 h-6 rounded-full object-cover" alt="" />
+                            <span className="text-xs font-semibold truncate">{msg.sharedPost.author?.name}</span>
+                          </div>
+                          {msg.sharedPost.mediaUrl && (
+                            <img src={msg.sharedPost.mediaUrl} alt="Post" className="w-full h-32 object-cover rounded-lg mb-2" />
+                          )}
+                          <p className="text-xs line-clamp-2 opacity-90">{msg.sharedPost.content}</p>
+                        </div>
+                      )}
+                      {msg.text && <p className="text-sm whitespace-pre-wrap">{msg.text}</p>}
                     </div>
                     <span className="text-[10px] text-slate-400 px-2">{formatDistanceToNow(new Date(msg.createdAt))} ago</span>
                   </div>

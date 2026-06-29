@@ -1,10 +1,11 @@
 const Message = require('../models/Message');
 const Conversation = require('../models/Conversation');
 const User = require('../models/User');
+const Post = require('../models/Post');
 
 const sendMessage = async (req, res) => {
   try {
-    const { content, conversationId, recipientId } = req.body;
+    const { content, conversationId, recipientId, sharedPostId } = req.body;
     let mediaUrl = null;
 
     if (req.file) {
@@ -32,13 +33,20 @@ const sendMessage = async (req, res) => {
       conversation: conversation._id,
       sender: req.user.id,
       text: content || '',
-      mediaUrl
+      mediaUrl,
+      sharedPost: sharedPostId || null
     });
 
     conversation.lastMessage = newMessage._id;
     await conversation.save();
 
     await newMessage.populate('sender', 'name handle profileImage');
+    if (newMessage.sharedPost) {
+      await newMessage.populate({
+        path: 'sharedPost',
+        populate: { path: 'author', select: 'name handle profileImage' }
+      });
+    }
     await newMessage.populate({
       path: 'conversation',
       populate: {
@@ -60,7 +68,11 @@ const getMessages = async (req, res) => {
       deletedFor: { $ne: req.user.id }
     })
       .populate('sender', 'name profileImage handle')
-      .populate('conversation');
+      .populate('conversation')
+      .populate({
+        path: 'sharedPost',
+        populate: { path: 'author', select: 'name handle profileImage' }
+      });
     res.json(messages);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch messages' });
@@ -75,9 +87,14 @@ const fetchConversations = async (req, res) => {
       .sort({ updatedAt: -1 });
     
     // Populate sender of lastMessage
-    const populatedConvos = await User.populate(conversations, {
+    let populatedConvos = await User.populate(conversations, {
       path: 'lastMessage.sender',
       select: 'name profileImage handle'
+    });
+
+    populatedConvos = await Post.populate(populatedConvos, {
+      path: 'lastMessage.sharedPost',
+      populate: { path: 'author', select: 'name handle profileImage' }
     });
 
     res.json(populatedConvos);

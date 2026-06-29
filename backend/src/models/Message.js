@@ -6,6 +6,7 @@ const messageSchema = new mongoose.Schema({
   text: { type: String, default: '' },
   mediaUrl: { type: String, default: null },
   isRead: { type: Boolean, default: false },
+  sharedPost: { type: mongoose.Schema.Types.ObjectId, ref: 'Post', default: null },
   deletedFor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 }, { timestamps: true });
 

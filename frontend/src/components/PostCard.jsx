@@ -6,6 +6,7 @@ import { Heart, MessageCircle, Share2, MoreVertical, Send, MapPin, Trash2 } from
 import { formatDistanceToNow } from 'date-fns';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import SharePostModal from './SharePostModal';
 
 const PostCard = ({ post, index = 0 }) => {
   const { user } = useAuth();
@@ -15,6 +16,7 @@ const PostCard = ({ post, index = 0 }) => {
   const [commentText, setCommentText] = useState('');
   const [showComments, setShowComments] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const handleFollow = async (userId) => {
     await sendRequest(userId);
@@ -94,7 +96,7 @@ const PostCard = ({ post, index = 0 }) => {
             <span className="text-white text-xs font-bold drop-shadow-md">{post.comments?.length || 0}</span>
           </button>
 
-          <button className="flex flex-col items-center gap-1">
+          <button onClick={() => setIsShareModalOpen(true)} className="flex flex-col items-center gap-1">
             <div className="w-12 h-12 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/10 hover:bg-black/60 transition transform active:scale-95">
               <Share2 className="w-6 h-6 text-white" />
             </div>
@@ -168,6 +170,8 @@ const PostCard = ({ post, index = 0 }) => {
             </form>
           </div>
         )}
+        
+        <SharePostModal isOpen={isShareModalOpen} onClose={() => setIsShareModalOpen(false)} postId={post._id} />
       </motion.div>
     );
   }
@@ -247,7 +251,7 @@ const PostCard = ({ post, index = 0 }) => {
         <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 hover:text-primary transition-colors">
           <MessageCircle className="w-5 h-5" /> <span className="text-sm font-medium">{post.comments?.length || 0}</span>
         </button>
-        <button className="flex items-center gap-1.5 hover:text-primary transition-colors">
+        <button onClick={() => setIsShareModalOpen(true)} className="flex items-center gap-1.5 hover:text-primary transition-colors">
           <Share2 className="w-5 h-5" />
         </button>
       </div>
@@ -279,6 +283,8 @@ const PostCard = ({ post, index = 0 }) => {
           </form>
         </div>
       )}
+      
+      <SharePostModal isOpen={isShareModalOpen} onClose={() => setIsShareModalOpen(false)} postId={post._id} />
     </motion.div>
   );
 };

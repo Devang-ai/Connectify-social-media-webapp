@@ -110,7 +110,7 @@ const useMessageStore = create((set, get) => ({
     }
   },
 
-  sendMessage: async (content, conversationId, recipientId, mediaFile = null) => {
+  sendMessage: async (content, conversationId, recipientId, mediaFile = null, sharedPostId = null) => {
     try {
       let payload;
       let headers = {};
@@ -120,10 +120,11 @@ const useMessageStore = create((set, get) => ({
         payload.append('content', content || '');
         if (conversationId) payload.append('conversationId', conversationId);
         if (recipientId) payload.append('recipientId', recipientId);
+        if (sharedPostId) payload.append('sharedPostId', sharedPostId);
         payload.append('media', mediaFile);
         headers['Content-Type'] = 'multipart/form-data';
       } else {
-        payload = { content, conversationId, recipientId };
+        payload = { content, conversationId, recipientId, sharedPostId };
       }
 
       const res = await axios.post((import.meta.env.VITE_API_URL || 'http://localhost:5001') + '/api/messages', payload, { headers });
