@@ -71,12 +71,14 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
   useEffect(() => {
     if (remoteStream && remoteVideoRef.current) {
       remoteVideoRef.current.srcObject = remoteStream;
+      remoteVideoRef.current.play().catch(e => console.log('Video play error:', e));
     }
   }, [remoteStream]);
 
   useEffect(() => {
     if (localStream && localVideoRef.current) {
       localVideoRef.current.srcObject = localStream;
+      localVideoRef.current.play().catch(e => console.log('Video play error:', e));
     }
   }, [localStream]);
 
@@ -238,7 +240,8 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
                   ref={remoteVideoRef} 
                   autoPlay 
                   playsInline 
-                  className="w-full h-full object-contain"
+                  disablePictureInPicture
+                  className="w-full h-full object-contain pointer-events-none"
                 />
               ) : (
                 <div className="flex flex-col items-center animate-pulse">
@@ -260,7 +263,8 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
                         autoPlay 
                         playsInline 
                         muted 
-                        className="w-full h-full object-cover"
+                        disablePictureInPicture
+                        className="w-full h-full object-cover pointer-events-none"
                     />
                 </div>
             )}
