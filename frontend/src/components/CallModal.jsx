@@ -20,8 +20,13 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const peerConnectionRef = useRef(null);
+  const peerInitialized = useRef(false);
+  const callStartedRef = useRef(false);
 
   useEffect(() => {
+    if (peerInitialized.current) return;
+    peerInitialized.current = true;
+
     try {
       const peer = new RTCPeerConnection({
         iceServers: [
@@ -52,12 +57,6 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
       console.error("Peer connection error", e);
       setErrorMsg('Failed to initialize connection.');
     }
-
-    return () => {
-      if (peerConnectionRef.current) {
-        peerConnectionRef.current.close();
-      }
-    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Cleanup local stream separately to avoid stale closure issues
@@ -131,7 +130,8 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
 
   // Start Call (Caller)
   useEffect(() => {
-    if (callTarget) {
+    if (callTarget && !callStartedRef.current) {
+      callStartedRef.current = true;
       startCall();
     }
   }, [callTarget]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -167,6 +167,7 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
   };
 
   const acceptCall = async () => {
+    if (callAccepted) return;
     try {
       setCallAccepted(true);
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
