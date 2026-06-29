@@ -91,6 +91,14 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
         setCallAccepted(true);
         if (peerConnectionRef.current) {
           await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(signal));
+          
+          const storeState = useMessageStore.getState();
+          if (storeState.pendingIceCandidates.length > 0) {
+            storeState.pendingIceCandidates.forEach(c => {
+              peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(c)).catch(e => console.error(e));
+            });
+            storeState.clearPendingIceCandidates();
+          }
         }
       } catch (e) { console.error(e); }
     };
@@ -168,6 +176,14 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
          stream.getTracks().forEach(track => peerConnectionRef.current.addTrack(track, stream));
          await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(incomingCall.signal));
          
+         const storeState = useMessageStore.getState();
+         if (storeState.pendingIceCandidates.length > 0) {
+           storeState.pendingIceCandidates.forEach(c => {
+             peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(c)).catch(e => console.error(e));
+           });
+           storeState.clearPendingIceCandidates();
+         }
+
          const answer = await peerConnectionRef.current.createAnswer();
          await peerConnectionRef.current.setLocalDescription(answer);
 
