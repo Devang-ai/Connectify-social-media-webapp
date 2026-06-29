@@ -2,7 +2,9 @@
 
 Connectify is a modern, fully-functional social media platform built using the MERN stack (MongoDB, Express, React, Node.js). It features real-time messaging, WebRTC video/voice calling, photo stories, dynamic activity feeds, and a beautiful responsive UI.
 
-**Live Demo:** [https://connectify-social-media-webapp.vercel.app/]
+**Live Demo:** [https://connectify-social-media-webapp.vercel.app/](https://connectify-social-media-webapp.vercel.app/)
+
+> **Note on Performance:** The backend is currently hosted on Render's free tier. If the server has been inactive, it will automatically spin down. When you visit the app for the first time, **it may take up to 30-50 seconds for the server to wake up**. Please be patient on the initial load!
 
 ## 🏗️ Application Architecture
 
@@ -35,38 +37,3 @@ We went above and beyond the basic requirements to build a highly competitive so
 - **Database & Storage:** MongoDB Atlas, Cloudinary
 - **Deployment:** Vercel (Frontend) & Render (Backend)
 
-## ⚙️ Setup and Installation Instructions
-
-### Prerequisites
-- Node.js installed (v16+)
-- MongoDB Atlas account (or local MongoDB)
-- Cloudinary account (for image uploads)
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/Devang-ai/Connectify-social-media-webapp.git
-cd Connectify-social-media-webapp
-```
-
-### 2. Backend Setup
-```bash
-cd backend
-npm install
-```
-
-npm run dev
-```
-
-### 3. Frontend Setup
-Open a new terminal window:
-```bash
-cd frontend
-npm install
-```
-Start the frontend development server:
-```bash
-npm run dev
-```
-
-### 4. Access the App
-Open your browser and navigate to `http://localhost:5173`.
