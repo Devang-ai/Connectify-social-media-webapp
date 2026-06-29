@@ -1,43 +1,87 @@
 # Connectify - Full Stack Social Media Web App
 
-Connectify is a modern, fully-functional social media platform built using the MERN stack (MongoDB, Express, React, Node.js). It features real-time messaging, photo stories, dynamic activity feeds, and a beautiful dark-mode compatible UI built for both desktop and mobile. 
+Connectify is a modern, fully-functional social media platform built using the MERN stack (MongoDB, Express, React, Node.js). It features real-time messaging, WebRTC video/voice calling, photo stories, dynamic activity feeds, and a beautiful responsive UI.
 
 **Live Demo:** [https://connectify-social-media-webapp.vercel.app/](https://connectify-social-media-webapp.vercel.app/)
 
-## ✨ Key Features
-- **Real-Time Chat:** Instant messaging using WebSockets (Socket.io) with features like "Clear Chat",Video Calling,Voice Calling and typing indicators.
-- **Photo Stories:** Upload and view 15-second ephemeral photo stories with mobile-friendly touch cropping.
-- **Dynamic Post Feed:** Create posts, upload images, like, comment, and engage with other users' content seamlessly.
-- **Activity Notifications:** Organized tabs for All, Likes, Comments, and Mentions to keep track of engagement.
-- **User Authentication:** Secure JWT-based login and registration with encrypted passwords.
-- **Responsive Premium UI:** Built with TailwindCSS and custom animations to look stunning on every device.
+## 🏗️ Application Architecture
+
+Connectify follows a modern Client-Server architecture:
+- **Frontend (Client):** Built with React (Vite) and TailwindCSS. It uses Zustand for global state management and Axios for RESTful API communication. Socket.io-client handles real-time bidirectional communication.
+- **Backend (API Server):** A Node.js and Express.js server providing RESTful endpoints. It uses Mongoose to interact with the database. Socket.io runs alongside the HTTP server to handle real-time chat, notifications, and WebRTC signaling.
+- **Database:** MongoDB Atlas is used for scalable document storage (Users, Posts, Messages, Stories, Notifications).
+- **Media Storage:** Cloudinary is integrated on the backend to handle secure upload, processing, and delivery of images and videos (avatars, post media, stories, chat attachments).
+
+## ✅ Required Features Implemented
+1. **User Authentication:** JWT-based user registration and secure login functionality.
+2. **Profile Pages:** Users can create and update profiles, and upload profile/cover pictures.
+3. **Friend Connections:** Search for users globally, and send, accept, or reject friend requests.
+4. **News Feed:** A dynamic home feed displaying chronological posts from friends and connections.
+5. **Post Creation:** Users can create rich posts, upload images and videos, add locations, and tag other users.
+6. **Messaging:** Real-time private direct messaging with friends.
+
+## 🚀 Extra Features (Beyond Requirements)
+We went above and beyond the basic requirements to build a highly competitive social platform:
+- **Real-Time WebRTC Video & Voice Calling:** Call your friends directly in the browser with peer-to-peer WebRTC!
+- **Instagram-Style Photo Stories:** 15-second ephemeral photo/video stories with an intuitive viewer.
+- **Post Sharing to DMs:** "Share" any post directly into a private chat message (rendered as a rich embed in the chat window).
+- **Multimedia Chat:** Send images, videos, and emojis seamlessly inside direct messages.
+- **Activity Notifications:** A dedicated notification center tracking likes, comments, mentions, and friend requests.
+- **Responsive "Glassmorphism" UI:** A stunning, ultra-modern user interface that automatically adapts to both mobile phones and desktop screens perfectly.
 
 ## 🛠️ Tech Stack
-- **Frontend:** React (Vite), Zustand (State Management), TailwindCSS
-- **Backend:** Node.js, Express.js, Socket.io
-- **Database:** MongoDB Atlas & Mongoose
-- **Image Hosting:** Cloudinary
+- **Frontend:** React, Zustand, TailwindCSS, Framer Motion, Socket.io-client
+- **Backend:** Node.js, Express.js, Socket.io, JWT, WebRTC Signaling
+- **Database & Storage:** MongoDB Atlas, Cloudinary
 - **Deployment:** Vercel (Frontend) & Render (Backend)
 
-## 🚀 Run Locally
-1. Clone the repository
+## ⚙️ Setup and Installation Instructions
+
+### Prerequisites
+- Node.js installed (v16+)
+- MongoDB Atlas account (or local MongoDB)
+- Cloudinary account (for image uploads)
+
+### 1. Clone the repository
 ```bash
 git clone https://github.com/Devang-ai/Connectify-social-media-webapp.git
-```
-2. Install dependencies for both frontend and backend
-```bash
-cd backend && npm install
-cd ../frontend && npm install
-```
-3. Create `.env` files in both the frontend and backend with your MongoDB, Cloudinary, and JWT secrets.
-4. Start the development servers
-```bash
-# In backend directory
-npm run dev
-
-# In frontend directory
-npm run dev
+cd Connectify-social-media-webapp
 ```
 
-## 📸 Screenshots
-*(Coming Soon )*
+### 2. Backend Setup
+```bash
+cd backend
+npm install
+```
+Create a `.env` file in the `backend` directory:
+```env
+PORT=5001
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_super_secret_jwt_key
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+NODE_ENV=development
+```
+Start the backend server:
+```bash
+npm run dev
+```
+
+### 3. Frontend Setup
+Open a new terminal window:
+```bash
+cd frontend
+npm install
+```
+Create a `.env` file in the `frontend` directory:
+```env
+VITE_API_URL=http://localhost:5001
+```
+Start the frontend development server:
+```bash
+npm run dev
+```
+
+### 4. Access the App
+Open your browser and navigate to `http://localhost:5173`.
