@@ -71,6 +71,7 @@ function App() {
               incomingCall={incomingCall}
               isVideo={isVideoCall}
               onEnd={() => clearCall()}
+              currentUser={user}
             />
           )}
         </>

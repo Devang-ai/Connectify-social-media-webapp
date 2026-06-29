@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import useMessageStore from '../store/useMessageStore';
 import { Phone, PhoneOff, Video, VideoOff, Mic, MicOff } from 'lucide-react';
 
-const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
+const CallModal = ({ incomingCall, callTarget, isVideo, onEnd, currentUser }) => {
   const getSocket = useMessageStore(state => state.getSocket);
   const socket = getSocket();
   const pendingIceCandidates = useMessageStore(state => state.pendingIceCandidates);
@@ -42,7 +42,7 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
       peer.onicecandidate = (event) => {
         if (event.candidate && socket) {
           socket.emit('ice_candidate', {
-            to: incomingCall ? incomingCall.from : callTarget?._id,
+            to: incomingCall ? incomingCall.from : (callTarget?._id || callTarget?.id),
             candidate: event.candidate
           });
         }
@@ -149,13 +149,13 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
          const offer = await peerConnectionRef.current.createOffer();
          await peerConnectionRef.current.setLocalDescription(offer);
 
-         if (socket) {
+         if (socket && currentUser) {
            socket.emit('call_user', {
              userToCall: callTarget._id || callTarget.id,
              signalData: offer,
-             from: socket.id, 
-             callerName: 'You', 
-             callerImage: '',
+             from: currentUser._id || currentUser.id, 
+             callerName: currentUser.username || 'You', 
+             callerImage: currentUser.profilePicture || '',
              isVideo: isVideo
            });
          }
@@ -213,7 +213,7 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
         peerConnectionRef.current.close();
       }
       if (emitEvent && socket) {
-        const target = incomingCall ? incomingCall.from : callTarget?._id;
+        const target = incomingCall ? incomingCall.from : (callTarget?._id || callTarget?.id);
         if (target) {
             socket.emit('end_call', { to: target });
         }
