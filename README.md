@@ -2,7 +2,7 @@
 
 Connectify is a modern, fully-functional social media platform built using the MERN stack (MongoDB, Express, React, Node.js). It features real-time messaging, WebRTC video/voice calling, photo stories, dynamic activity feeds, and a beautiful responsive UI.
 
-**Live Demo:** [https://connectify-social-media-webapp.vercel.app/](https://connectify-social-media-webapp.vercel.app/)
+**Live Demo:** [https://connectify-social-media-webapp.vercel.app/]
 
 ## 🏗️ Application Architecture
 
@@ -53,18 +53,7 @@ cd Connectify-social-media-webapp
 cd backend
 npm install
 ```
-Create a `.env` file in the `backend` directory:
-```env
-PORT=5001
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_super_secret_jwt_key
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-NODE_ENV=development
-```
-Start the backend server:
-```bash
+
 npm run dev
 ```
 
@@ -73,10 +62,6 @@ Open a new terminal window:
 ```bash
 cd frontend
 npm install
-```
-Create a `.env` file in the `frontend` directory:
-```env
-VITE_API_URL=http://localhost:5001
 ```
 Start the frontend development server:
 ```bash
