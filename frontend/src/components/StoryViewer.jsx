@@ -187,7 +187,7 @@ const StoryViewer = ({ allGroups, initialGroupIndex = 0, onClose }) => {
 
           {/* Reply Section */}
           {!isMyStory && (
-            <div className="absolute bottom-0 left-0 right-0 z-20 p-4 bg-gradient-to-t from-black/80 to-transparent pb-safe" onClick={(e) => e.stopPropagation()}>
+            <div className="absolute bottom-0 left-0 right-0 z-20 p-4 bg-gradient-to-t from-black/80 to-transparent pb-[env(safe-area-inset-bottom,16px)]" onClick={(e) => e.stopPropagation()}>
               <form onSubmit={handleReplySubmit} className="flex gap-2">
                 <input 
                   type="text" 
