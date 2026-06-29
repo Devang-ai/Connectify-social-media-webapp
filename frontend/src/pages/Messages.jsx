@@ -209,7 +209,13 @@ const Messages = () => {
                   {!isMe && <img src={msg.sender?.profileImage || `https://ui-avatars.com/api/?name=${msg.sender?.name}`} alt="Avatar" className="w-8 h-8 rounded-full object-cover shrink-0 self-end mb-1" />}
                   <div className={`flex flex-col gap-1 ${isMe ? 'items-end' : ''}`}>
                     <div className={`p-3 md:p-4 shadow-sm ${isMe ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl rounded-br-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-2xl rounded-bl-sm'}`}>
-                      {msg.mediaUrl && <img src={msg.mediaUrl} alt="Attachment" className="w-full max-w-xs rounded-xl object-cover mb-2" />}
+                      {msg.mediaUrl && (
+                        msg.mediaUrl.match(/\.(mp4|webm|mov)$/i) ? (
+                          <video src={msg.mediaUrl.startsWith('uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/${msg.mediaUrl.replace(/\\/g, '/')}` : msg.mediaUrl} controls className="w-full max-w-xs rounded-xl object-cover mb-2" />
+                        ) : (
+                          <img src={msg.mediaUrl.startsWith('uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/${msg.mediaUrl.replace(/\\/g, '/')}` : msg.mediaUrl} alt="Attachment" className="w-full max-w-xs rounded-xl object-cover mb-2" />
+                        )
+                      )}
                       {msg.sharedPost && typeof msg.sharedPost === 'object' && (
                         <div className={`mb-2 rounded-xl p-3 border w-64 ${isMe ? 'bg-white/10 border-white/20' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-sm'}`}>
                           <div className="flex items-center gap-2 mb-2">
@@ -217,7 +223,11 @@ const Messages = () => {
                             <span className="text-xs font-semibold truncate">{msg.sharedPost.author?.name}</span>
                           </div>
                           {msg.sharedPost.mediaUrl && (
-                            <img src={msg.sharedPost.mediaUrl} alt="Post" className="w-full h-32 object-cover rounded-lg mb-2" />
+                            msg.sharedPost.mediaType === 'video' || msg.sharedPost.mediaUrl.match(/\.(mp4|webm|mov)$/i) ? (
+                              <video src={msg.sharedPost.mediaUrl.startsWith('uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/${msg.sharedPost.mediaUrl.replace(/\\/g, '/')}` : msg.sharedPost.mediaUrl} controls className="w-full h-32 object-cover rounded-lg mb-2" />
+                            ) : (
+                              <img src={msg.sharedPost.mediaUrl.startsWith('uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/${msg.sharedPost.mediaUrl.replace(/\\/g, '/')}` : msg.sharedPost.mediaUrl} alt="Post" className="w-full h-32 object-cover rounded-lg mb-2" />
+                            )
                           )}
                           <p className="text-xs line-clamp-2 opacity-90">{msg.sharedPost.content}</p>
                         </div>
