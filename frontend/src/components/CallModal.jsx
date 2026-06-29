@@ -5,6 +5,8 @@ import { Phone, PhoneOff, Video, VideoOff, Mic, MicOff } from 'lucide-react';
 const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
   const getSocket = useMessageStore(state => state.getSocket);
   const socket = getSocket();
+  const pendingIceCandidates = useMessageStore(state => state.pendingIceCandidates);
+  const clearPendingIceCandidates = useMessageStore(state => state.clearPendingIceCandidates);
 
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
@@ -18,7 +20,6 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const peerConnectionRef = useRef(null);
-  const iceCandidatesQueue = useRef([]);
 
   useEffect(() => {
     try {
@@ -88,25 +89,8 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
         setCallAccepted(true);
         if (peerConnectionRef.current) {
           await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(signal));
-          // Process queued ICE candidates
-          while (iceCandidatesQueue.current.length > 0) {
-            const candidate = iceCandidatesQueue.current.shift();
-            try { await peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate)); } catch(e){}
-          }
         }
       } catch (e) { console.error(e); }
-    };
-
-    const handleIceCandidate = async (candidate) => {
-      if (peerConnectionRef.current) {
-        if (peerConnectionRef.current.remoteDescription) {
-          try {
-            await peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate));
-          } catch (e) { console.error('Error adding ICE candidate', e); }
-        } else {
-          iceCandidatesQueue.current.push(candidate);
-        }
-      }
     };
 
     const handleCallEnded = () => {
@@ -114,15 +98,23 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
     };
 
     socket.on('call_accepted', handleCallAccepted);
-    socket.on('ice_candidate', handleIceCandidate);
     socket.on('call_ended', handleCallEnded);
 
     return () => {
       socket.off('call_accepted', handleCallAccepted);
-      socket.off('ice_candidate', handleIceCandidate);
       socket.off('call_ended', handleCallEnded);
     };
   }, [socket]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Process Global ICE Candidates
+  useEffect(() => {
+    if (peerConnectionRef.current?.remoteDescription && pendingIceCandidates.length > 0) {
+      pendingIceCandidates.forEach(candidate => {
+        peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate)).catch(e => console.error('Error adding ICE candidate', e));
+      });
+      clearPendingIceCandidates();
+    }
+  }, [pendingIceCandidates, callAccepted]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Start Call (Caller)
   useEffect(() => {
@@ -174,12 +166,6 @@ const CallModal = ({ incomingCall, callTarget, isVideo, onEnd }) => {
          stream.getTracks().forEach(track => peerConnectionRef.current.addTrack(track, stream));
          await peerConnectionRef.current.setRemoteDescription(new RTCSessionDescription(incomingCall.signal));
          
-         // Process queued ICE candidates
-         while (iceCandidatesQueue.current.length > 0) {
-           const candidate = iceCandidatesQueue.current.shift();
-           try { await peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(candidate)); } catch(e){}
-         }
-
          const answer = await peerConnectionRef.current.createAnswer();
          await peerConnectionRef.current.setLocalDescription(answer);
 

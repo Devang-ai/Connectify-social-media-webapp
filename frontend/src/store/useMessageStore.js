@@ -18,7 +18,11 @@ const useMessageStore = create((set, get) => ({
   setIncomingCall: (call) => set({ incomingCall: call }),
   setActiveCallTarget: (target) => set({ activeCallTarget: target }),
   setIsVideoCall: (isVideo) => set({ isVideoCall: isVideo }),
-  clearCall: () => set({ incomingCall: null, activeCallTarget: null }),
+  clearCall: () => set({ incomingCall: null, activeCallTarget: null, pendingIceCandidates: [] }),
+
+  pendingIceCandidates: [],
+  addPendingIceCandidate: (candidate) => set(state => ({ pendingIceCandidates: [...state.pendingIceCandidates, candidate] })),
+  clearPendingIceCandidates: () => set({ pendingIceCandidates: [] }),
 
   initSocket: (userId) => {
     console.log('Initializing socket for user:', userId);
@@ -54,6 +58,10 @@ const useMessageStore = create((set, get) => ({
 
     socket.on('call_incoming', (data) => {
       set({ incomingCall: data, isVideoCall: data.isVideo });
+    });
+
+    socket.on('ice_candidate', (candidate) => {
+      get().addPendingIceCandidate(candidate);
     });
   },
 
