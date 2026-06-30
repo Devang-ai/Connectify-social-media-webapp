@@ -51,7 +51,6 @@ const useStoryStore = create((set) => ({
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       
-      toast.success('Story posted successfully!');
       // Re-fetch stories to update the UI
       useStoryStore.getState().fetchStories();
     } catch (error) {

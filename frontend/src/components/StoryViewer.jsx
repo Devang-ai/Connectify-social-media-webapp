@@ -27,7 +27,6 @@ const StoryViewer = ({ allGroups, initialGroupIndex = 0, onClose }) => {
     if (!replyText.trim()) return;
     
     await sendMessage(`Replying to story: ${replyText}`, null, currentGroup.user._id);
-    toast.success('Reply sent!');
     setReplyText('');
     onClose();
   };

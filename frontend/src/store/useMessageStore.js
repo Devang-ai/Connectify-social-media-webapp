@@ -146,7 +146,6 @@ const useMessageStore = create((set, get) => ({
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/messages/${conversationId}/clear`);
       set({ messages: [] });
-      toast.success('Chat cleared successfully');
     } catch (error) {
       console.error('Failed to clear chat', error);
       toast.error('Failed to clear chat');

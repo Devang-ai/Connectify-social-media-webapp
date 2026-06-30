@@ -24,7 +24,6 @@ const PostCard = ({ post, index = 0 }) => {
     try {
       await sendRequest(userId);
       fetchRequests();
-      toast.success('Friend request sent!');
     } catch (error) {
       toast.error('Failed to send request.');
     }
@@ -36,7 +35,6 @@ const PostCard = ({ post, index = 0 }) => {
     try {
       await addComment(post._id, commentText);
       setCommentText('');
-      toast.success('Comment added!');
     } catch (error) {
       toast.error('Failed to add comment.');
     }
@@ -98,13 +96,13 @@ const PostCard = ({ post, index = 0 }) => {
                   ) : (
                     <>
                       <button 
-                        onClick={() => { toast.success('Post reported'); setShowMenu(false); }}
+                        onClick={() => { setShowMenu(false); }}
                         className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium"
                       >
                         Report Post
                       </button>
                       <button 
-                        onClick={() => { toast.success('Post hidden'); setIsHidden(true); setShowMenu(false); }}
+                        onClick={() => { setIsHidden(true); setShowMenu(false); }}
                         className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium"
                       >
                         Hide Post
@@ -259,7 +257,6 @@ const PostCard = ({ post, index = 0 }) => {
                     onClick={async () => {
                       try {
                         await deletePost(post._id);
-                        toast.success('Post deleted');
                       } catch (error) {
                         toast.error('Failed to delete post');
                       }
@@ -272,13 +269,13 @@ const PostCard = ({ post, index = 0 }) => {
                 ) : (
                   <>
                     <button 
-                      onClick={() => { toast.success('Post reported'); setShowMenu(false); }}
+                      onClick={() => { setShowMenu(false); }}
                       className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium"
                     >
                       Report Post
                     </button>
                     <button 
-                      onClick={() => { toast.success('Post hidden'); setIsHidden(true); setShowMenu(false); }}
+                      onClick={() => { setIsHidden(true); setShowMenu(false); }}
                       className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium"
                     >
                       Hide Post

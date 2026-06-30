@@ -68,7 +68,6 @@ const Profile = () => {
     if (!isFriend && !isRequestSent) {
       try {
         await sendRequest(id);
-        toast.success('Friend request sent!');
       } catch (error) {
         toast.error('Failed to send friend request');
       }
