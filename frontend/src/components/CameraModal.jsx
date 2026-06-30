@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, RefreshCcw, Image as ImageIcon, Zap, Settings } from 'lucide-react';
+import { X, RefreshCcw, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CameraModal = ({ isOpen, onClose, onCapture }) => {
@@ -119,16 +119,6 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
             <button onClick={() => { stopCamera(); onClose(); }} className="p-2 bg-black/20 rounded-full text-white backdrop-blur-md">
               <X className="w-6 h-6" />
             </button>
-            
-            {/* Top Controls */}
-            <div className="flex gap-4">
-              <button className="p-2 text-white drop-shadow-md hover:opacity-70 transition">
-                <Zap className="w-6 h-6" />
-              </button>
-              <button className="p-2 text-white drop-shadow-md hover:opacity-70 transition">
-                <Settings className="w-6 h-6" />
-              </button>
-            </div>
           </div>
 
           {error ? (
