@@ -5,7 +5,7 @@ import usePostStore from '../store/usePostStore';
 import useFriendStore from '../store/useFriendStore';
 import { X, Image as ImageIcon, Video, MapPin, Users, Check } from 'lucide-react';
 
-const CreatePostModal = ({ isOpen, onClose }) => {
+const CreatePostModal = ({ isOpen, onClose, initialMedia = null }) => {
   const { user } = useAuth();
   const { createPost } = usePostStore();
   const { friends, fetchFriends } = useFriendStore();
@@ -27,8 +27,19 @@ const CreatePostModal = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (isOpen) {
       fetchFriends();
+      if (initialMedia) {
+        setMedia(initialMedia);
+        setMediaPreview(URL.createObjectURL(initialMedia));
+      }
+    } else {
+      // Reset state on close
+      setContent('');
+      removeMedia();
+      setLocation('');
+      setShowLocationInput(false);
+      setTaggedUsers([]);
     }
-  }, [isOpen, fetchFriends]);
+  }, [isOpen, fetchFriends, initialMedia]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
