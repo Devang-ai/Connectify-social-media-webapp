@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import { Search, MessageCircle } from 'lucide-react';
+import { Search, MessageCircle, PlusSquare } from 'lucide-react';
 import usePostStore from '../store/usePostStore';
 import useFriendStore from '../store/useFriendStore';
 import useStoryStore from '../store/useStoryStore';
@@ -49,15 +49,11 @@ const HomeFeed = () => {
     <div className="max-w-4xl mx-auto py-6 px-4 pb-24">
       {/* Top Header */}
       <header className="flex items-center justify-between mb-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-2xl p-4 sticky top-4 z-50">
-        {/* Left: Profile & Search */}
+        {/* Left: Plus Icon & Search */}
         <div className="flex items-center gap-4 flex-1">
-          <Link to="/profile">
-            <img 
-              src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=6366f1&color=fff`} 
-              alt="Profile" 
-              className="w-10 h-10 rounded-full object-cover border-2 border-primary cursor-pointer hover:scale-105 transition-transform"
-            />
-          </Link>
+          <button onClick={handleAddStoryClick} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors relative">
+            <PlusSquare className="w-6 h-6 text-slate-700 dark:text-slate-300" />
+          </button>
           <div className="hidden md:flex flex-1 max-w-xs relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
             <input 
