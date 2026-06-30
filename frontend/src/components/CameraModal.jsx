@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, RefreshCcw, Image as ImageIcon } from 'lucide-react';
+import { X, RefreshCcw, Image as ImageIcon, Zap, ZapOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CameraModal = ({ isOpen, onClose, onCapture }) => {
   const [stream, setStream] = useState(null);
   const [facingMode, setFacingMode] = useState('environment'); // 'user' or 'environment'
   const [mode, setMode] = useState('story'); // 'post' or 'story'
-  const [hasFlash, setHasFlash] = useState(false);
+  const [isFlashOn, setIsFlashOn] = useState(false);
+  const [isFlashing, setIsFlashing] = useState(false);
   const [error, setError] = useState('');
 
   const videoRef = useRef(null);
@@ -58,6 +59,19 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
   const handleCapture = () => {
     if (!videoRef.current || !canvasRef.current) return;
 
+    if (isFlashOn) {
+      setIsFlashing(true);
+      // Wait for screen to flash before taking picture
+      setTimeout(() => {
+        takePicture();
+        setTimeout(() => setIsFlashing(false), 100);
+      }, 150);
+    } else {
+      takePicture();
+    }
+  };
+
+  const takePicture = () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     
@@ -115,11 +129,34 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
         <div className="flex-1 w-full relative bg-zinc-900 rounded-[2.5rem] overflow-hidden mt-[max(env(safe-area-inset-top),12px)]">
           
           {/* Top Header */}
-          <div className="absolute top-0 w-full z-10 flex justify-between items-center p-4">
+          <div className="absolute top-0 w-full z-20 flex justify-between items-center p-4">
             <button onClick={() => { stopCamera(); onClose(); }} className="p-2 bg-black/20 rounded-full text-white backdrop-blur-md">
               <X className="w-6 h-6" />
             </button>
+            
+            {/* Top Controls */}
+            <div className="flex gap-4">
+              <button 
+                onClick={() => setIsFlashOn(!isFlashOn)}
+                className={`p-2 drop-shadow-md transition-colors rounded-full ${isFlashOn ? 'text-yellow-400 bg-white/10' : 'text-white hover:text-white/70'}`}
+              >
+                {isFlashOn ? <Zap className="w-6 h-6 fill-current" /> : <ZapOff className="w-6 h-6" />}
+              </button>
+            </div>
           </div>
+
+          {/* Flash Overlay */}
+          <AnimatePresence>
+            {isFlashing && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.1 }}
+                className="absolute inset-0 z-10 bg-white pointer-events-none"
+              />
+            )}
+          </AnimatePresence>
 
           {error ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center text-white/70">
