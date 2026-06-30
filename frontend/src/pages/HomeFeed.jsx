@@ -48,27 +48,36 @@ const HomeFeed = () => {
   return (
     <div className="max-w-4xl mx-auto py-6 px-4 pb-24">
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-2xl p-4 sticky top-4 z-50">
-        <h1 className="text-3xl tracking-wide font-logo font-medium text-slate-800 dark:text-white">Connectify</h1>
-        
-        <div className="hidden md:flex flex-1 max-w-md mx-8 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
-          <input 
-            type="text" 
-            placeholder="Search connections..." 
-            className="w-full bg-slate-100 dark:bg-slate-800 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all text-slate-800 dark:text-slate-100"
-          />
+      <header className="flex items-center justify-between mb-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-2xl p-4 sticky top-4 z-50">
+        {/* Left: Profile & Search */}
+        <div className="flex items-center gap-4 flex-1">
+          <Link to="/profile">
+            <img 
+              src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=6366f1&color=fff`} 
+              alt="Profile" 
+              className="w-10 h-10 rounded-full object-cover border-2 border-primary cursor-pointer hover:scale-105 transition-transform"
+            />
+          </Link>
+          <div className="hidden md:flex flex-1 max-w-xs relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+            <input 
+              type="text" 
+              placeholder="Search..." 
+              className="w-full bg-slate-100 dark:bg-slate-800 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all text-slate-800 dark:text-slate-100"
+            />
+          </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        {/* Center: Logo */}
+        <div className="flex-1 flex justify-center">
+          <h1 className="text-3xl tracking-wide font-logo font-medium text-slate-800 dark:text-white">Connectify</h1>
+        </div>
+        
+        {/* Right: Chat */}
+        <div className="flex items-center justify-end flex-1">
           <Link to="/messages" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors relative">
             <MessageCircle className="w-6 h-6 text-slate-700 dark:text-slate-300" />
           </Link>
-          <img 
-            src={user?.profileImage || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=6366f1&color=fff`} 
-            alt="Profile" 
-            className="w-10 h-10 rounded-full object-cover border-2 border-primary cursor-pointer hover:scale-105 transition-transform"
-          />
         </div>
       </header>
 
