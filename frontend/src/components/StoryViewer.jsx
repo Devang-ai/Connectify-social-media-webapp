@@ -26,7 +26,7 @@ const StoryViewer = ({ allGroups, initialGroupIndex = 0, onClose }) => {
     e.preventDefault();
     if (!replyText.trim()) return;
     
-    await sendMessage(`Replying to story: ${replyText}`, null, currentGroup.user._id);
+    await sendMessage(`Replying to story: ${replyText}`, null, currentGroup.user._id, null, null, currentStory._id);
     setReplyText('');
     onClose();
   };

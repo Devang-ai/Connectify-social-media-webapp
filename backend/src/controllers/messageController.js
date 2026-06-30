@@ -5,7 +5,7 @@ const Post = require('../models/Post');
 
 const sendMessage = async (req, res) => {
   try {
-    const { content, conversationId, recipientId, sharedPostId } = req.body;
+    const { content, conversationId, recipientId, sharedPostId, sharedStoryId } = req.body;
     let mediaUrl = null;
 
     if (req.file) {
@@ -34,7 +34,8 @@ const sendMessage = async (req, res) => {
       sender: req.user.id,
       text: content || '',
       mediaUrl,
-      sharedPost: sharedPostId || null
+      sharedPost: sharedPostId || null,
+      sharedStory: sharedStoryId || null
     });
 
     conversation.lastMessage = newMessage._id;
@@ -44,6 +45,12 @@ const sendMessage = async (req, res) => {
     if (newMessage.sharedPost) {
       await newMessage.populate({
         path: 'sharedPost',
+        populate: { path: 'author', select: 'name handle profileImage' }
+      });
+    }
+    if (newMessage.sharedStory) {
+      await newMessage.populate({
+        path: 'sharedStory',
         populate: { path: 'author', select: 'name handle profileImage' }
       });
     }
@@ -72,6 +79,10 @@ const getMessages = async (req, res) => {
       .populate({
         path: 'sharedPost',
         populate: { path: 'author', select: 'name handle profileImage' }
+      })
+      .populate({
+        path: 'sharedStory',
+        populate: { path: 'author', select: 'name handle profileImage' }
       });
     res.json(messages);
   } catch (error) {
@@ -95,6 +106,12 @@ const fetchConversations = async (req, res) => {
     populatedConvos = await Post.populate(populatedConvos, {
       path: 'lastMessage.sharedPost',
       populate: { path: 'author', select: 'name handle profileImage' }
+    });
+
+    populatedConvos = await Post.populate(populatedConvos, {
+      path: 'lastMessage.sharedStory',
+      populate: { path: 'author', select: 'name handle profileImage' },
+      model: 'Story'
     });
 
     res.json(populatedConvos);

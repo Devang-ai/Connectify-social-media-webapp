@@ -143,7 +143,7 @@ const Messages = () => {
                     </div>
                     {chat?.lastMessage ? (
                       <p className={`text-xs truncate ${isActive ? 'text-slate-700 dark:text-slate-300 font-medium' : 'text-slate-500'}`}>
-                        {chat.lastMessage.sharedPost ? 'Shared a post.' : (chat.lastMessage.text || 'Sent an attachment')}
+                        {chat.lastMessage.sharedPost ? 'Shared a post.' : chat.lastMessage.sharedStory ? 'Replied to a story.' : (chat.lastMessage.text || 'Sent an attachment')}
                       </p>
                     ) : (
                       <p className="text-xs text-slate-500">{friend.handle}</p>
@@ -230,6 +230,21 @@ const Messages = () => {
                             )
                           )}
                           <p className="text-xs line-clamp-2 opacity-90">{msg.sharedPost.content}</p>
+                        </div>
+                      )}
+                      {msg.sharedStory && typeof msg.sharedStory === 'object' && (
+                        <div className={`mb-2 rounded-xl p-3 border w-48 ${isMe ? 'bg-white/10 border-white/20' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 shadow-sm'}`}>
+                          <div className="flex items-center gap-2 mb-2">
+                            <img src={msg.sharedStory.author?.profileImage || `https://ui-avatars.com/api/?name=${msg.sharedStory.author?.name}`} className="w-6 h-6 rounded-full object-cover" alt="" />
+                            <span className="text-xs font-semibold truncate">{msg.sharedStory.author?.name}'s story</span>
+                          </div>
+                          {msg.sharedStory.mediaUrl && (
+                            msg.sharedStory.mediaType === 'video' || msg.sharedStory.mediaUrl.match(/\.(mp4|webm|mov)$/i) ? (
+                              <video src={msg.sharedStory.mediaUrl.startsWith('uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/${msg.sharedStory.mediaUrl.replace(/\\/g, '/')}` : msg.sharedStory.mediaUrl} controls className="w-full h-64 object-cover rounded-lg mb-2" />
+                            ) : (
+                              <img src={msg.sharedStory.mediaUrl.startsWith('uploads') ? `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/${msg.sharedStory.mediaUrl.replace(/\\/g, '/')}` : msg.sharedStory.mediaUrl} alt="Story" className="w-full h-64 object-cover rounded-lg mb-2" />
+                            )
+                          )}
                         </div>
                       )}
                       {msg.text && <p className="text-sm whitespace-pre-wrap">{msg.text}</p>}
