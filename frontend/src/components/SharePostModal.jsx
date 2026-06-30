@@ -42,7 +42,6 @@ const SharePostModal = ({ isOpen, onClose, postId }) => {
     await sendMessage('Check out this post!', null, friendId, null, postId);
     
     setSentTo(prev => [...prev, friendId]);
-    toast.success('Post shared successfully!');
   };
 
   const handleBackdropClick = (e) => {
