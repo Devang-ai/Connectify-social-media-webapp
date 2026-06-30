@@ -116,10 +116,10 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
         className="fixed inset-0 z-[100] bg-black flex flex-col overflow-hidden"
       >
         {/* Video Preview */}
-        <div className="flex-1 w-full relative bg-zinc-900 rounded-[2.5rem] overflow-hidden mt-[max(env(safe-area-inset-top),12px)]">
+        <div className="flex-1 w-full relative bg-zinc-900 rounded-b-[2.5rem] overflow-hidden shadow-2xl">
           
           {/* Top Header */}
-          <div className="absolute top-0 w-full z-20 flex justify-between items-center p-4">
+          <div className="absolute top-0 w-full z-20 flex justify-between items-center p-4 pt-[max(env(safe-area-inset-top),16px)]">
             <button onClick={() => { stopCamera(); onClose(); }} className="p-2 bg-black/20 rounded-full text-white backdrop-blur-md">
               <X className="w-6 h-6" />
             </button>
@@ -155,13 +155,38 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
             accept="image/*,video/*" 
             className="hidden" 
           />
+          {/* Capture Area (Floating over video) */}
+          <div className="absolute bottom-6 w-full px-8 flex justify-between items-center z-20">
+            {/* Gallery Picker */}
+            <button 
+              onClick={handleGalleryClick}
+              className="w-10 h-10 rounded-lg overflow-hidden border-2 border-white/50 hover:border-white transition-colors bg-zinc-800 flex items-center justify-center backdrop-blur-md"
+            >
+              <ImageIcon className="w-5 h-5 text-white/70" />
+            </button>
+
+            {/* Shutter Button */}
+            <button 
+              onClick={handleCapture}
+              disabled={!!error}
+              className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center active:scale-95 transition-transform disabled:opacity-50 drop-shadow-xl"
+            >
+              <div className="w-[66px] h-[66px] bg-white rounded-full"></div>
+            </button>
+
+            {/* Switch Camera */}
+            <button 
+              onClick={toggleCamera}
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md hover:bg-black/40 transition-colors text-white"
+            >
+              <RefreshCcw className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
-        {/* Bottom Controls */}
-        <div className="w-full bg-black shrink-0 pt-4 pb-[max(env(safe-area-inset-bottom),24px)]">
-          
-          {/* Mode Selector */}
-          <div className="flex justify-center items-center py-2 text-xs font-bold tracking-widest text-white/60 space-x-6 relative">
+        {/* Bottom Mode Selector Bar */}
+        <div className="w-full bg-black h-20 sm:h-24 flex items-center justify-center shrink-0 pb-[max(env(safe-area-inset-bottom),8px)]">
+          <div className="flex justify-center items-center text-xs font-bold tracking-widest text-white/60 space-x-6 relative">
             <button 
               onClick={() => setMode('post')}
               className={`transition-all px-2 ${mode === 'post' ? 'text-white scale-110' : 'hover:text-white/80'}`}
@@ -176,40 +201,10 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
             </button>
             {/* Tiny dot indicator */}
             <motion.div 
-              className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-white"
+              className="absolute -bottom-2 w-1.5 h-1.5 rounded-full bg-white"
               animate={{ x: mode === 'post' ? -42 : 44 }} // Approximate positions
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             />
-          </div>
-
-          {/* Capture Area */}
-          <div className="flex justify-between items-center px-8 py-6 pb-12">
-            
-            {/* Gallery Picker */}
-            <button 
-              onClick={handleGalleryClick}
-              className="w-10 h-10 rounded-lg overflow-hidden border-2 border-white/50 hover:border-white transition-colors bg-zinc-800 flex items-center justify-center"
-            >
-              <ImageIcon className="w-5 h-5 text-white/70" />
-            </button>
-
-            {/* Shutter Button */}
-            <button 
-              onClick={handleCapture}
-              disabled={!!error}
-              className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center active:scale-95 transition-transform disabled:opacity-50"
-            >
-              <div className="w-[66px] h-[66px] bg-white rounded-full"></div>
-            </button>
-
-            {/* Switch Camera */}
-            <button 
-              onClick={toggleCamera}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white"
-            >
-              <RefreshCcw className="w-5 h-5" />
-            </button>
-
           </div>
         </div>
       </motion.div>
