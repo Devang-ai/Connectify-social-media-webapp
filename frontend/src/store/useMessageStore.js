@@ -25,7 +25,6 @@ const useMessageStore = create((set, get) => ({
   clearPendingIceCandidates: () => set({ pendingIceCandidates: [] }),
 
   initSocket: (userId) => {
-    console.log('Initializing socket for user:', userId);
     
     if (socket) {
       socket.disconnect();
@@ -38,13 +37,11 @@ const useMessageStore = create((set, get) => ({
     
     // Built-in socket.io event for connection AND reconnection
     socket.on('connect', () => {
-      console.log('Socket connected! Emitting setup for user:', userId);
       socket.emit('setup', userId);
     });
     
     // Custom event from our backend confirming setup
     socket.on('connected', () => {
-      console.log('Backend confirmed setup!');
       set({ isSocketConnected: true });
     });
     

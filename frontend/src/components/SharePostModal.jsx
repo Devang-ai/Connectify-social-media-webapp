@@ -14,8 +14,18 @@ const SharePostModal = ({ isOpen, onClose, postId }) => {
     if (isOpen) {
       fetchFriends();
       setSentTo(new Set());
+      document.body.style.overflow = 'hidden';
+      
+      const handleEscape = (e) => {
+        if (e.key === 'Escape') onClose();
+      };
+      document.addEventListener('keydown', handleEscape);
+      return () => {
+        document.body.style.overflow = 'unset';
+        document.removeEventListener('keydown', handleEscape);
+      };
     }
-  }, [isOpen, fetchFriends]);
+  }, [isOpen, fetchFriends, onClose]);
 
   if (!isOpen) return null;
 
@@ -34,9 +44,15 @@ const SharePostModal = ({ isOpen, onClose, postId }) => {
     toast.success('Post shared successfully!');
   };
 
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl flex flex-col max-h-[80vh]">
+    <div onClick={handleBackdropClick} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl flex flex-col max-h-[80vh] animate-in fade-in zoom-in-95 duration-200">
         <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
           <h3 className="font-bold text-lg text-slate-800 dark:text-white">Share to...</h3>
           <button onClick={onClose} className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition">

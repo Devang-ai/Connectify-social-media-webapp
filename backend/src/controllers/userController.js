@@ -123,9 +123,7 @@ const getFriendsList = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-    console.log("UPDATE PROFILE - req.body:", req.body);
-    console.log("UPDATE PROFILE - req.files:", req.files);
-    
+        
     const { name, handle, bio, location, education } = req.body;
     let updateData = {};
     if (name) updateData.name = name;
@@ -153,16 +151,14 @@ const updateProfile = async (req, res) => {
 
 const getFriendRequests = async (req, res) => {
   try {
-    console.log("Fetching requests for user:", req.user.id);
-    
+        
     const incoming = await FriendRequest.find({ recipient: req.user.id, status: 'pending' })
       .populate('requester', 'name handle profileImage');
       
     const sent = await FriendRequest.find({ requester: req.user.id, status: 'pending' })
       .populate('recipient', 'name handle profileImage');
       
-    console.log("Found sent requests:", sent);
-    
+        
     res.json({ incoming, sent });
   } catch (error) {
     console.error("Error in getFriendRequests:", error);

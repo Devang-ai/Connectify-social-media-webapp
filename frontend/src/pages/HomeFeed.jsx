@@ -48,7 +48,7 @@ const HomeFeed = () => {
   return (
     <div className="max-w-4xl mx-auto py-6 px-4 pb-24">
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6 glass-card p-4 sticky top-4 z-50">
+      <header className="flex justify-between items-center mb-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-2xl p-4 sticky top-4 z-50">
         <h1 className="text-2xl font-bold gradient-text">Connectify</h1>
         
         <div className="hidden md:flex flex-1 max-w-md mx-8 relative">

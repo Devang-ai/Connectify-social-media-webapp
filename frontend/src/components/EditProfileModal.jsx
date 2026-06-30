@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { X, Camera, MapPin, Briefcase, User, AtSign, Loader2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const EditProfileModal = ({ isOpen, onClose }) => {
   const { user, updateUser, setIsNewUser } = useAuth();
@@ -57,8 +58,10 @@ const EditProfileModal = ({ isOpen, onClose }) => {
       await updateUser(formData);
       setIsNewUser(false); // If they were a new user, they are now onboarded
       onClose();
+      toast.success('Profile updated successfully!');
     } catch (err) {
       console.error('Failed to update profile', err);
+      toast.error('Failed to update profile.');
     } finally {
       setIsSubmitting(false);
     }

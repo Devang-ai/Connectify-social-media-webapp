@@ -5,6 +5,7 @@ import useFriendStore from '../store/useFriendStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Briefcase, Calendar, Edit3, Image as ImageIcon, Users, LayoutGrid, UserPlus, Settings, Check, Clock } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import { formatDistanceToNow } from 'date-fns';
 import EditProfileModal from '../components/EditProfileModal';
 import PostCard from '../components/PostCard';
@@ -65,7 +66,12 @@ const Profile = () => {
 
   const handleFollow = async () => {
     if (!isFriend && !isRequestSent) {
-      await sendRequest(id);
+      try {
+        await sendRequest(id);
+        toast.success('Friend request sent!');
+      } catch (error) {
+        toast.error('Failed to send friend request');
+      }
     }
   };
 
@@ -258,7 +264,7 @@ const Profile = () => {
                   </div>
                 ) : (
                   profileFriends.map(friend => (
-                    <Link to={`/profile/${friend._id}`} key={friend._id} className="glass-card p-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                    <Link to={`/profile/${friend._id}`} key={friend._id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm rounded-xl p-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                       <img src={friend.profileImage || `https://ui-avatars.com/api/?name=${friend.name}`} className="w-12 h-12 rounded-full" />
                       <div>
                         <h4 className="font-bold text-sm dark:text-white hover:underline">{friend.name}</h4>
