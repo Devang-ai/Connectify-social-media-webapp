@@ -9,6 +9,7 @@ import PostCard from '../components/PostCard';
 import StoryViewer from '../components/StoryViewer';
 import CreateStoryModal from '../components/CreateStoryModal';
 import CreatePostModal from '../components/CreatePostModal';
+import CameraModal from '../components/CameraModal';
 
 const HomeFeed = () => {
   const { user } = useAuth();
@@ -22,8 +23,8 @@ const HomeFeed = () => {
   const [showStoryOptions, setShowStoryOptions] = React.useState(false);
   
   // New Capture states
+  const [isCameraModalOpen, setIsCameraModalOpen] = React.useState(false);
   const [capturedFile, setCapturedFile] = React.useState(null);
-  const [showShareModal, setShowShareModal] = React.useState(false);
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = React.useState(false);
 
   useEffect(() => {
@@ -34,17 +35,17 @@ const HomeFeed = () => {
   }, [fetchFeed, fetchFriends, fetchRequests, fetchStories]);
 
   const handleAddStoryClick = () => {
-    fileInputRef.current?.click();
+    setIsCameraModalOpen(true);
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
+  const handleCaptureComplete = (file, mode) => {
+    setIsCameraModalOpen(false);
+    if (mode === 'story') {
+      setSelectedStoryFile(file);
+    } else {
       setCapturedFile(file);
-      setShowShareModal(true);
+      setIsCreatePostModalOpen(true);
     }
-    // reset input so same file can be selected again
-    e.target.value = '';
   };
 
   const handlePostStory = async (file, textOverlays) => {
@@ -144,8 +145,6 @@ const HomeFeed = () => {
             </>
           );
         })()}
-        
-        <input type="file" ref={fileInputRef} className="hidden" accept="image/*,video/*" capture="environment" onChange={handleFileChange} />
       </div>
 
       {/* Action Modal for Your Story */}
@@ -203,45 +202,11 @@ const HomeFeed = () => {
         />
       )}
 
-      {/* Share To Modal */}
-      {showShareModal && (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/50 sm:px-4 pb-4 sm:pb-0">
-          <div 
-            className="bg-white dark:bg-slate-800 rounded-t-2xl sm:rounded-2xl p-4 w-full max-w-sm flex flex-col gap-2 shadow-2xl animate-in slide-in-from-bottom-4 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="w-10 h-1 bg-slate-300 dark:bg-slate-600 rounded-full mx-auto mb-2 sm:hidden" />
-            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2 text-center">Share To</h3>
-            <button 
-              onClick={() => {
-                setSelectedStoryFile(capturedFile);
-                setShowShareModal(false);
-              }}
-              className="w-full bg-indigo-50 hover:bg-indigo-100 dark:bg-slate-700 dark:hover:bg-slate-600 text-indigo-600 dark:text-indigo-400 font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"
-            >
-              Your Story
-            </button>
-            <button 
-              onClick={() => {
-                setIsCreatePostModalOpen(true);
-                setShowShareModal(false);
-              }}
-              className="w-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"
-            >
-              Create Post
-            </button>
-            <button 
-              onClick={() => {
-                setShowShareModal(false);
-                setCapturedFile(null);
-              }}
-              className="w-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 font-medium py-3 mt-2 rounded-xl transition"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
+      <CameraModal 
+        isOpen={isCameraModalOpen}
+        onClose={() => setIsCameraModalOpen(false)}
+        onCapture={handleCaptureComplete}
+      />
 
       <CreatePostModal 
         isOpen={isCreatePostModalOpen} 
