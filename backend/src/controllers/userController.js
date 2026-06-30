@@ -68,6 +68,9 @@ const sendFriendRequest = async (req, res) => {
       type: 'friend_request'
     });
 
+    const io = req.app.get('io');
+    if (io) io.to(recipientId).emit('new_notification');
+
     res.status(201).json(request);
   } catch (error) {
     res.status(500).json({ error: 'Failed to send friend request' });
@@ -104,6 +107,12 @@ const respondFriendRequest = async (req, res) => {
         sender: request.requester,
         type: 'connected'
       });
+
+      const io = req.app.get('io');
+      if (io) {
+        io.to(request.requester.toString()).emit('new_notification');
+        io.to(request.recipient.toString()).emit('new_notification');
+      }
     }
 
     res.json({ message: `Friend request ${status}` });

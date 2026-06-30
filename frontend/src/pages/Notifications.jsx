@@ -4,7 +4,8 @@ import { Bell, Heart, MessageCircle, UserPlus, Star, ChevronLeft, MoreHorizontal
 import { Link } from 'react-router-dom';
 import useFriendStore from '../store/useFriendStore';
 import axios from 'axios';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, isToday } from 'date-fns';
+import useMessageStore from '../store/useMessageStore';
 
 const Notifications = () => {
   const [activeTab, setActiveTab] = useState('all');
@@ -19,10 +20,24 @@ const Notifications = () => {
   const { requests, fetchRequests, respondRequest } = useFriendStore();
   const [realNotifications, setRealNotifications] = useState([]);
 
+  const { getSocket } = useMessageStore();
+
   useEffect(() => {
     fetchRequests();
     fetchRealNotifications();
-  }, [fetchRequests]);
+
+    const socket = getSocket();
+    if (socket) {
+      const handleNewNotif = () => {
+        fetchRequests();
+        fetchRealNotifications();
+      };
+      socket.on('new_notification', handleNewNotif);
+      return () => {
+        socket.off('new_notification', handleNewNotif);
+      };
+    }
+  }, [fetchRequests, getSocket]);
 
   const fetchRealNotifications = async () => {
     try {
@@ -55,7 +70,7 @@ const Notifications = () => {
     content: 'sent you a friend request.',
     time: formatDistanceToNow(new Date(req.createdAt), { addSuffix: true }),
     isNew: true,
-    category: 'today',
+    category: isToday(new Date(req.createdAt)) ? 'today' : 'earlier',
     requestId: req._id
   }));
 
@@ -88,7 +103,7 @@ const Notifications = () => {
       content: content,
       time: formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true }),
       isNew: !notif.isRead,
-      category: 'today' // Ideally sort by date
+      category: isToday(new Date(notif.createdAt)) ? 'today' : 'earlier'
     };
   });
 

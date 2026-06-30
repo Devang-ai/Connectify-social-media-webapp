@@ -44,6 +44,12 @@ const createPost = async (req, res) => {
         }));
       if (tagNotifications.length > 0) {
         await Notification.insertMany(tagNotifications);
+        const io = req.app.get('io');
+        if (io) {
+          tagNotifications.forEach(notif => {
+            io.to(notif.recipient.toString()).emit('new_notification');
+          });
+        }
       }
     }
 
@@ -102,6 +108,8 @@ const likePost = async (req, res) => {
             type: 'like',
             post: post._id
           });
+          const io = req.app.get('io');
+          if (io) io.to(post.author.toString()).emit('new_notification');
         }
       }
     }
@@ -135,6 +143,8 @@ const addComment = async (req, res) => {
         type: 'comment',
         post: post._id
       });
+      const io = req.app.get('io');
+      if (io) io.to(post.author.toString()).emit('new_notification');
     }
 
     await comment.populate('author', 'name handle profileImage');
