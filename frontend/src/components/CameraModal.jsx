@@ -109,27 +109,28 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-between overflow-hidden"
+        className="fixed inset-0 z-[100] bg-black flex flex-col overflow-hidden"
       >
-        {/* Top Header */}
-        <div className="absolute top-0 w-full z-10 flex justify-between items-center p-4 pt-[max(env(safe-area-inset-top),16px)]">
-          <button onClick={() => { stopCamera(); onClose(); }} className="p-2 bg-black/30 rounded-full text-white backdrop-blur-md">
-            <X className="w-6 h-6" />
-          </button>
-          
-          {/* Top Controls */}
-          <div className="flex gap-4">
-            <button className="p-2 text-white hover:opacity-70 transition">
-              <Zap className="w-6 h-6" />
-            </button>
-            <button className="p-2 text-white hover:opacity-70 transition">
-              <Settings className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-
         {/* Video Preview */}
-        <div className="flex-1 w-full relative bg-zinc-900 rounded-b-3xl sm:rounded-none overflow-hidden">
+        <div className="flex-1 w-full relative bg-zinc-900 rounded-[2.5rem] overflow-hidden mt-[max(env(safe-area-inset-top),12px)]">
+          
+          {/* Top Header */}
+          <div className="absolute top-0 w-full z-10 flex justify-between items-center p-4">
+            <button onClick={() => { stopCamera(); onClose(); }} className="p-2 bg-black/20 rounded-full text-white backdrop-blur-md">
+              <X className="w-6 h-6" />
+            </button>
+            
+            {/* Top Controls */}
+            <div className="flex gap-4">
+              <button className="p-2 text-white drop-shadow-md hover:opacity-70 transition">
+                <Zap className="w-6 h-6" />
+              </button>
+              <button className="p-2 text-white drop-shadow-md hover:opacity-70 transition">
+                <Settings className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+
           {error ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center text-white/70">
               <ImageIcon className="w-12 h-12 mb-4 opacity-50" />
@@ -147,7 +148,7 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
               autoPlay 
               playsInline 
               muted 
-              className={`w-full h-full object-cover ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
+              className={`absolute inset-0 w-full h-full object-cover ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
             />
           )}
           
@@ -163,10 +164,10 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
         </div>
 
         {/* Bottom Controls */}
-        <div className="w-full bg-black pb-[max(env(safe-area-inset-bottom),16px)]">
+        <div className="w-full bg-black shrink-0 pt-4 pb-[max(env(safe-area-inset-bottom),24px)]">
           
           {/* Mode Selector */}
-          <div className="flex justify-center items-center py-4 text-xs font-bold tracking-widest text-white/60 space-x-6 relative">
+          <div className="flex justify-center items-center py-2 text-xs font-bold tracking-widest text-white/60 space-x-6 relative">
             <button 
               onClick={() => setMode('post')}
               className={`transition-all px-2 ${mode === 'post' ? 'text-white scale-110' : 'hover:text-white/80'}`}
