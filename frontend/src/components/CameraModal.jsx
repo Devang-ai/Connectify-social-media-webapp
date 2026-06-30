@@ -113,10 +113,10 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="fixed inset-0 z-[100] bg-black flex flex-col overflow-hidden"
+        className="fixed inset-0 z-[100] bg-black"
       >
-        {/* Video Preview */}
-        <div className="flex-1 w-full relative bg-zinc-900 rounded-b-[2.5rem] overflow-hidden shadow-2xl">
+        {/* Full Screen Video Container */}
+        <div className="absolute inset-0 w-full h-full bg-zinc-900 sm:rounded-none rounded-b-[2.5rem] overflow-hidden">
           
           {/* Top Header */}
           <div className="absolute top-0 w-full z-20 flex justify-between items-center p-4 pt-[max(env(safe-area-inset-top),16px)]">
@@ -155,56 +155,58 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
             accept="image/*,video/*" 
             className="hidden" 
           />
-          {/* Capture Area (Floating over video) */}
-          <div className="absolute bottom-6 w-full px-8 flex justify-between items-center z-20">
-            {/* Gallery Picker */}
-            <button 
-              onClick={handleGalleryClick}
-              className="w-10 h-10 rounded-lg overflow-hidden border-2 border-white/50 hover:border-white transition-colors bg-zinc-800 flex items-center justify-center backdrop-blur-md"
-            >
-              <ImageIcon className="w-5 h-5 text-white/70" />
-            </button>
+          {/* Bottom Overlay Controls */}
+          <div className="absolute bottom-0 w-full flex flex-col items-center pb-[max(env(safe-area-inset-bottom),24px)] z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-20">
+            
+            {/* Capture Area */}
+            <div className="w-full px-8 flex justify-between items-center mb-6">
+              {/* Gallery Picker */}
+              <button 
+                onClick={handleGalleryClick}
+                className="w-10 h-10 rounded-lg overflow-hidden border-2 border-white/50 hover:border-white transition-colors bg-zinc-800 flex items-center justify-center backdrop-blur-md"
+              >
+                <ImageIcon className="w-5 h-5 text-white/70" />
+              </button>
 
-            {/* Shutter Button */}
-            <button 
-              onClick={handleCapture}
-              disabled={!!error}
-              className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center active:scale-95 transition-transform disabled:opacity-50 drop-shadow-xl"
-            >
-              <div className="w-[66px] h-[66px] bg-white rounded-full"></div>
-            </button>
+              {/* Shutter Button */}
+              <button 
+                onClick={handleCapture}
+                disabled={!!error}
+                className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center active:scale-95 transition-transform disabled:opacity-50 drop-shadow-xl"
+              >
+                <div className="w-[66px] h-[66px] bg-white rounded-full"></div>
+              </button>
 
-            {/* Switch Camera */}
-            <button 
-              onClick={toggleCamera}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md hover:bg-black/40 transition-colors text-white"
-            >
-              <RefreshCcw className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
+              {/* Switch Camera */}
+              <button 
+                onClick={toggleCamera}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md hover:bg-black/40 transition-colors text-white"
+              >
+                <RefreshCcw className="w-5 h-5" />
+              </button>
+            </div>
 
-        {/* Bottom Mode Selector Bar */}
-        <div className="w-full bg-black h-20 sm:h-24 flex items-center justify-center shrink-0 pb-[max(env(safe-area-inset-bottom),8px)]">
-          <div className="flex justify-center items-center text-xs font-bold tracking-widest text-white/60 space-x-6 relative">
-            <button 
-              onClick={() => setMode('post')}
-              className={`transition-all px-2 ${mode === 'post' ? 'text-white scale-110' : 'hover:text-white/80'}`}
-            >
-              POST
-            </button>
-            <button 
-              onClick={() => setMode('story')}
-              className={`transition-all px-2 ${mode === 'story' ? 'text-white scale-110' : 'hover:text-white/80'}`}
-            >
-              STORY
-            </button>
-            {/* Tiny dot indicator */}
-            <motion.div 
-              className="absolute -bottom-2 w-1.5 h-1.5 rounded-full bg-white"
-              animate={{ x: mode === 'post' ? -42 : 44 }} // Approximate positions
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            />
+            {/* Mode Selector */}
+            <div className="flex justify-center items-center text-xs font-bold tracking-widest text-white/90 space-x-6 relative mb-4">
+              <button 
+                onClick={() => setMode('post')}
+                className={`transition-all px-2 ${mode === 'post' ? 'text-white scale-110 drop-shadow-md' : 'hover:text-white/80'}`}
+              >
+                POST
+              </button>
+              <button 
+                onClick={() => setMode('story')}
+                className={`transition-all px-2 ${mode === 'story' ? 'text-white scale-110 drop-shadow-md' : 'hover:text-white/80'}`}
+              >
+                STORY
+              </button>
+              {/* Tiny dot indicator */}
+              <motion.div 
+                className="absolute -bottom-3 w-1.5 h-1.5 rounded-full bg-white drop-shadow-md"
+                animate={{ x: mode === 'post' ? -42 : 44 }} // Approximate positions
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              />
+            </div>
           </div>
         </div>
       </motion.div>
