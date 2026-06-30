@@ -73,24 +73,41 @@ const PostCard = ({ post, index = 0 }) => {
             <button onClick={() => setShowMenu(!showMenu)} className="text-white drop-shadow-md bg-black/40 p-2 rounded-full hover:bg-black/60 transition-colors">
               <MoreVertical className="w-5 h-5" />
             </button>
-            {showMenu && isMe && (
+            {showMenu && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)}></div>
                 <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl py-1 z-50 border border-slate-100 dark:border-slate-700">
-                  <button 
-                    onClick={async () => {
-                      try {
-                        await deletePost(post._id);
-                        toast.success('Post deleted');
-                      } catch (error) {
-                        toast.error('Failed to delete post');
-                      }
-                      setShowMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-rose-500 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium flex items-center gap-2"
-                  >
-                    <Trash2 className="w-4 h-4" /> Delete Post
-                  </button>
+                  {isMe ? (
+                    <button 
+                      onClick={async () => {
+                        try {
+                          await deletePost(post._id);
+                          toast.success('Post deleted');
+                        } catch (error) {
+                          toast.error('Failed to delete post');
+                        }
+                        setShowMenu(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-rose-500 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium flex items-center gap-2"
+                    >
+                      <Trash2 className="w-4 h-4" /> Delete Post
+                    </button>
+                  ) : (
+                    <>
+                      <button 
+                        onClick={() => { toast.success('Post reported'); setShowMenu(false); }}
+                        className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium"
+                      >
+                        Report Post
+                      </button>
+                      <button 
+                        onClick={() => { toast.success('Post hidden'); setShowMenu(false); }}
+                        className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium"
+                      >
+                        Hide Post
+                      </button>
+                    </>
+                  )}
                 </div>
               </>
             )}
@@ -230,24 +247,41 @@ const PostCard = ({ post, index = 0 }) => {
           <button onClick={() => setShowMenu(!showMenu)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
             <MoreVertical className="w-5 h-5" />
           </button>
-          {showMenu && isMe && (
+          {showMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)}></div>
               <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl py-1 z-50 border border-slate-100 dark:border-slate-700">
-                <button 
-                  onClick={async () => {
-                    try {
-                      await deletePost(post._id);
-                      toast.success('Post deleted');
-                    } catch (error) {
-                      toast.error('Failed to delete post');
-                    }
-                    setShowMenu(false);
-                  }}
-                  className="w-full text-left px-4 py-2 text-sm text-rose-500 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium flex items-center gap-2"
-                >
-                  <Trash2 className="w-4 h-4" /> Delete Post
-                </button>
+                {isMe ? (
+                  <button 
+                    onClick={async () => {
+                      try {
+                        await deletePost(post._id);
+                        toast.success('Post deleted');
+                      } catch (error) {
+                        toast.error('Failed to delete post');
+                      }
+                      setShowMenu(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-rose-500 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium flex items-center gap-2"
+                  >
+                    <Trash2 className="w-4 h-4" /> Delete Post
+                  </button>
+                ) : (
+                  <>
+                    <button 
+                      onClick={() => { toast.success('Post reported'); setShowMenu(false); }}
+                      className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium"
+                    >
+                      Report Post
+                    </button>
+                    <button 
+                      onClick={() => { toast.success('Post hidden'); setShowMenu(false); }}
+                      className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium"
+                    >
+                      Hide Post
+                    </button>
+                  </>
+                )}
               </div>
             </>
           )}
