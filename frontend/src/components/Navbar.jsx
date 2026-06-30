@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Home, Search, PlusSquare, Bell, User, Settings as SettingsIcon } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Navbar = ({ onOpenCreatePost }) => {
   const { user } = useAuth();
@@ -60,11 +61,22 @@ const Navbar = ({ onOpenCreatePost }) => {
                 key={item.id}
                 to={item.path}
                 className={({ isActive }) =>
-                  `p-3 rounded-2xl transition-all ${isActive ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200'}`
+                  `relative p-3 rounded-2xl transition-all ${isActive ? 'bg-primary text-white shadow-lg shadow-primary/30 hover:scale-105' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 hover:scale-105'}`
                 }
                 title={item.label}
               >
-                <item.icon className="w-6 h-6" />
+                {({ isActive }) => (
+                  <>
+                    <item.icon className="w-6 h-6" />
+                    {isActive && (
+                      <motion.div 
+                        layoutId="active-nav-indicator"
+                        className="absolute -left-5 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-primary rounded-r-full"
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                    )}
+                  </>
+                )}
               </NavLink>
             ) : (
               <button
