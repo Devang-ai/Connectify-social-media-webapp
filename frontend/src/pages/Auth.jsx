@@ -51,7 +51,7 @@ const Auth = () => {
               <span className="font-bold text-xl gradient-text">C</span>
             </div>
           </div>
-          <h1 className="text-2xl font-bold gradient-text">Connectify</h1>
+          <h1 className="text-4xl font-logo tracking-wide text-slate-800 dark:text-white mt-2">Connectify</h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
             {isLogin ? 'Elevating professional connections.' : 'Get started for free today.'}
           </p>

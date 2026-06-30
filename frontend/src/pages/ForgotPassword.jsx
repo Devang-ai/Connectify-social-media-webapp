@@ -27,7 +27,7 @@ const ForgotPassword = () => {
               <span className="font-bold text-xl gradient-text">C</span>
             </div>
           </div>
-          <h1 className="text-2xl font-bold gradient-text">Connectify</h1>
+          <h1 className="text-4xl font-logo tracking-wide text-slate-800 dark:text-white mt-2">Connectify</h1>
         </div>
 
         <div className="glass-card p-8 shadow-2xl relative overflow-hidden">
