@@ -18,6 +18,7 @@ const PostCard = ({ post, index = 0 }) => {
   const [showComments, setShowComments] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
 
   const handleFollow = async (userId) => {
     try {
@@ -46,6 +47,8 @@ const PostCard = ({ post, index = 0 }) => {
   const isMe = authorId === (user?._id || user?.id);
   const isFriend = friends.some(f => f._id === authorId);
   const isRequestSent = requests?.sent?.some(r => r.recipient?._id === authorId);
+
+  if (isHidden) return null;
 
   if (post.mediaType === 'video') {
     return (
@@ -101,7 +104,7 @@ const PostCard = ({ post, index = 0 }) => {
                         Report Post
                       </button>
                       <button 
-                        onClick={() => { toast.success('Post hidden'); setShowMenu(false); }}
+                        onClick={() => { toast.success('Post hidden'); setIsHidden(true); setShowMenu(false); }}
                         className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium"
                       >
                         Hide Post
@@ -275,7 +278,7 @@ const PostCard = ({ post, index = 0 }) => {
                       Report Post
                     </button>
                     <button 
-                      onClick={() => { toast.success('Post hidden'); setShowMenu(false); }}
+                      onClick={() => { toast.success('Post hidden'); setIsHidden(true); setShowMenu(false); }}
                       className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium"
                     >
                       Hide Post
