@@ -25,11 +25,12 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
     stopCamera(); // Stop any existing stream
     setError('');
     try {
+      const isPortrait = window.innerHeight > window.innerWidth;
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { 
           facingMode: facingMode,
-          width: { ideal: 1920 },
-          height: { ideal: 1080 }
+          width: isPortrait ? { ideal: 1080 } : { ideal: 1920 },
+          height: isPortrait ? { ideal: 1920 } : { ideal: 1080 }
         },
         audio: false
       });
