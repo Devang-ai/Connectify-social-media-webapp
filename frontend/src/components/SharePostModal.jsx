@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import useFriendStore from '../store/useFriendStore';
 import useMessageStore from '../store/useMessageStore';
-import { Search, X, Send } from 'lucide-react';
+import { Search, X, Send, Check } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const SharePostModal = ({ isOpen, onClose, postId }) => {
   const { friends, fetchFriends } = useFriendStore();
   const { sendMessage } = useMessageStore();
   const [searchTerm, setSearchTerm] = useState('');
-  const [sentTo, setSentTo] = useState(new Set());
+  const [sentTo, setSentTo] = useState([]);
 
   useEffect(() => {
     if (isOpen) {
       fetchFriends();
-      setSentTo(new Set());
+      setSentTo([]);
       document.body.style.overflow = 'hidden';
       
       const handleEscape = (e) => {
@@ -25,7 +25,8 @@ const SharePostModal = ({ isOpen, onClose, postId }) => {
         document.removeEventListener('keydown', handleEscape);
       };
     }
-  }, [isOpen, fetchFriends, onClose]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -35,12 +36,12 @@ const SharePostModal = ({ isOpen, onClose, postId }) => {
   );
 
   const handleShare = async (friendId) => {
-    if (sentTo.has(friendId)) return;
+    if (sentTo.includes(friendId)) return;
     
     // content, conversationId, recipientId, mediaFile, sharedPostId
     await sendMessage('Check out this post!', null, friendId, null, postId);
     
-    setSentTo(prev => new Set(prev).add(friendId));
+    setSentTo(prev => [...prev, friendId]);
     toast.success('Post shared successfully!');
   };
 
@@ -87,15 +88,19 @@ const SharePostModal = ({ isOpen, onClose, postId }) => {
                   </div>
                 </div>
                 <button 
-                  onClick={() => handleShare(friend._id)}
-                  disabled={sentTo.has(friend._id)}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1 ${
-                    sentTo.has(friend._id) 
-                      ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed' 
-                      : 'bg-primary text-white hover:bg-indigo-600 active:scale-95'
+                  onClick={() => handleShare(friend._id || friend.id)}
+                  disabled={sentTo.includes(friend._id || friend.id)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 ${
+                    sentTo.includes(friend._id || friend.id) 
+                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 cursor-not-allowed' 
+                      : 'bg-primary text-white hover:bg-indigo-600 active:scale-95 shadow-sm'
                   }`}
                 >
-                  {sentTo.has(friend._id) ? 'Sent' : 'Send'}
+                  {sentTo.includes(friend._id || friend.id) ? (
+                    <><Check className="w-3.5 h-3.5" /> Sent</>
+                  ) : (
+                    'Send'
+                  )}
                 </button>
               </div>
             ))
